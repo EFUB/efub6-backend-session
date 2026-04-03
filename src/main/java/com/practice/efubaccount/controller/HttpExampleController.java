@@ -7,14 +7,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("hello")
 public class HttpExampleController {
 
-    @GetMapping
-    public String hello(@RequestParam("name") String name){
-    }
+//    @GetMapping
+//    public String hello(@RequestParam("name") String name){
+//    }
 
     @GetMapping("/obj")
     public ExampleDto hello(@RequestParam("name") String name,
                             @RequestParam("id") Long id,
                             @RequestParam("password") String password) {
+        ExampleDto exampleDto = new ExampleDto();
 
+        exampleDto.setName(name);
+        exampleDto.setId(id);
+        exampleDto.setPassword(password);
+
+        return exampleDto;
     }
 }
