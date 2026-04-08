@@ -9,7 +9,7 @@ public class HttpExampleController {
 
     @GetMapping
     public String hello(@RequestParam("name") String name){
-        return "hello" + name;
+        return "Hello " + name;
     }
 
     @GetMapping("/obj")

@@ -17,8 +17,8 @@ public class CreateAccountRequestDto {
     public Account toEntity() {
         return Account.builder()
                 .email(email)
-                .password(password)
                 .nickname(nickname)
+                .password(password)
                 .build();
     }
 }
