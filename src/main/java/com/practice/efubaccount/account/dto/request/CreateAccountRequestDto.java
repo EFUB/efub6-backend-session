@@ -16,9 +16,9 @@ public class CreateAccountRequestDto {
     // Account 객체로 build
     public Account toEntity() {
         return Account.builder()
-                .email(email)
-                .password(password)
-                .nickname(nickname)
+                .email(this.email)
+                .password(this.password)
+                .nickname(this.nickname)
                 .build();
     }
 }
