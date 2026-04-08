@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder @Getter
 @AllArgsConstructor
 public class CreateAccountResponseDto {
-    private Long id;
+   private Long id;
     private String nickname;
     private String email;
     private String bio;

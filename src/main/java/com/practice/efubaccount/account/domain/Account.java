@@ -42,6 +42,7 @@ public class Account {
 
     public void updateBio(String bio) {
         this.bio = bio;
+
     }
 
     public void changeStatus(AccountStatus status) {

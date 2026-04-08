@@ -40,15 +40,16 @@ public class AccountsController {
                                                             @RequestBody BioUpdateRequestDto requestDto) {
         AccountResponseDto responseDto = accountsService.updateAccount(accountId, requestDto);
         return ResponseEntity.ok(responseDto);
+
     }
 
 
     // 계정 논리적 삭제(탈퇴): PATCH /accounts/{accountId}
     @PatchMapping("/{accountId}")
     public ResponseEntity<Map<String, String>> deleteAccount(@PathVariable("accountId") Long accountId) {
-        accountsService.deleteAccount(accountId);  // 상태 변경만 수행
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "성공적으로 탈퇴되었습니다.");
+        accountsService.deleteAccount(accountId);
+        Map<String,String> response = new HashMap<>();
+        response.put("message","성공적으로 탈퇴되었습니다.");
         return ResponseEntity.ok(response);
     }
 
@@ -56,8 +57,8 @@ public class AccountsController {
     @DeleteMapping("/{accountId}")
     public ResponseEntity<Map<String, String>> physicalDeleteAccount(@PathVariable("accountId") Long accountId) {
         accountsService.physicalDeleteAccount(accountId);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "성공적으로 탈퇴되었습니다.");
+        Map<String,String> response = new HashMap<>();
+        response.put("message","성공적으로 탈퇴되었습니다.");
         return ResponseEntity.ok(response);
     }
 }
