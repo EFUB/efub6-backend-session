@@ -12,7 +12,6 @@ import com.practice.efubaccount.post.dto.response.PostResponse;
 import com.practice.efubaccount.post.dto.summary.PostSummary;
 import com.practice.efubaccount.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +37,7 @@ public class PostService {
         // 조회수 증가
         postRepository.increaseViewCount(postId);
 
-        Post post = findbyPostid(postId);
+        Post post = findByPostId(postId);
         return PostResponse.from(post);
     }
 
@@ -52,7 +51,7 @@ public class PostService {
 
     @Transactional
     public void updatePostContent(Long postId, PostUpdateRequest request, Long accountId) {
-        Post post = findbyPostid(postId);
+        Post post = findByPostId(postId);
         Account account = accountService.findByAccountId(accountId);
 
         authorizePostWriter(post, account);
@@ -61,15 +60,14 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long postId, Long accountId) {
-        Post post = findbyPostid(postId);
+        Post post = findByPostId(postId);
         Account account = accountService.findByAccountId(accountId);
 
         authorizePostWriter(post, account);
         postRepository.delete(post);
     }
 
-
-    public Post findbyPostid(Long postId) {
+    public Post findByPostId(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(()-> new CustomException(ErrorCode.POST_NOT_FOUND));
     }
@@ -79,6 +77,4 @@ public class PostService {
             throw new CustomException(ErrorCode.POST_ACCOUNT_MISMATCH);
         }
     }
-
-
 }
