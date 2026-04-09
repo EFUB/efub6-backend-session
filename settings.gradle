@@ -1,1 +1,3 @@
 rootProject.name = 'efubaccount'
+
+include 'src:main:resource'

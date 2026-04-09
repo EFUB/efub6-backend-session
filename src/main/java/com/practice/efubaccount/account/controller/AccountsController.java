@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/accounts")
-@RequiredArgsConstructor
+@RequiredArgsConstructor //생성자 주입
 public class AccountsController {
 
     private final AccountsService accountsService;
@@ -23,14 +23,14 @@ public class AccountsController {
     // 회원 조회: GET /accounts/{accountId}
     @GetMapping("/{accountId}")
     public ResponseEntity<AccountResponseDto> getAccount(@PathVariable("accountId") Long accountId) {
-        AccountResponseDto responseDto = accountsService.getAccount(accountId);
+        AccountResponseDto responseDto = accountsService.getAccount(accountId); //응답 주는 메소드 가져와서 씀
         return ResponseEntity.ok(responseDto);
     }
 
     // 계정 생성 POST /accounts
     @PostMapping
     public ResponseEntity<CreateAccountResponseDto> createAccount(@RequestBody CreateAccountRequestDto requestDto) {
-        CreateAccountResponseDto responseDto = accountsService.createAccount(requestDto);
+        CreateAccountResponseDto responseDto= accountsService.createAccount(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -38,17 +38,17 @@ public class AccountsController {
     @PatchMapping("/profile/{accountId}")
     public ResponseEntity<AccountResponseDto> updateAccount(@PathVariable("accountId") Long accountId,
                                                             @RequestBody BioUpdateRequestDto requestDto) {
-        AccountResponseDto responseDto = accountsService.updateAccount(accountId, requestDto);
-        return ResponseEntity.ok(responseDto);
+        AccountResponseDto responseDto=accountsService.updateAccount(accountId, requestDto);
+        return  ResponseEntity.ok(responseDto);
     }
 
 
     // 계정 논리적 삭제(탈퇴): PATCH /accounts/{accountId}
     @PatchMapping("/{accountId}")
     public ResponseEntity<Map<String, String>> deleteAccount(@PathVariable("accountId") Long accountId) {
-        accountsService.deleteAccount(accountId);  // 상태 변경만 수행
+        accountsService.deleteAccount(accountId);
         Map<String, String> response = new HashMap<>();
-        response.put("message", "성공적으로 탈퇴되었습니다.");
+        response.put("message", "비활성화에 성공하였습니다.");
         return ResponseEntity.ok(response);
     }
 

@@ -16,7 +16,7 @@ public class AccountResponseDto {
     private String bio;
 
     public static AccountResponseDto from(Account account) {
-        return AccountResponseDto.builder()
+        return AccountResponseDto.builder()  //필요한 정보만
                 .nickname(account.getNickname())
                 .email(account.getEmail())
                 .bio(account.getBio())
