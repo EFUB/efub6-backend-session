@@ -1,16 +1,15 @@
-package com.practice.efubaccount.account.controller;
+package com.practice.efubaccount.controller;
 
-import com.practice.efubaccount.account.dto.ExampleDto;
+import com.practice.efubaccount.dto.ExampleDto;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("hello")
 public class HttpExampleController {
 
-    @GetMapping
-    public String hello(@RequestParam("name") String name){
-        return "hello" + name;
-    }
+//    @GetMapping
+//    public String hello(@RequestParam("name") String name){
+//    }
 
     @GetMapping("/obj")
     public ExampleDto hello(@RequestParam("name") String name,
