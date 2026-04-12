@@ -1,11 +1,10 @@
-package com.practice.efubaccount.controller;
+package com.practice.efubaccount.account.controller;
 
-import com.practice.efubaccount.domain.Account;
-import com.practice.efubaccount.dto.request.BioUpdateRequestDto;
-import com.practice.efubaccount.dto.request.CreateAccountRequestDto;
-import com.practice.efubaccount.dto.response.AccountResponseDto;
-import com.practice.efubaccount.dto.response.CreateAccountResponseDto;
-import com.practice.efubaccount.service.AccountsService;
+import com.practice.efubaccount.account.dto.request.BioUpdateRequestDto;
+import com.practice.efubaccount.account.dto.request.CreateAccountRequestDto;
+import com.practice.efubaccount.account.dto.response.AccountResponseDto;
+import com.practice.efubaccount.account.dto.response.CreateAccountResponseDto;
+import com.practice.efubaccount.account.service.AccountsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +46,7 @@ public class AccountsController {
     // 계정 논리적 삭제(탈퇴): PATCH /accounts/{accountId}
     @PatchMapping("/{accountId}")
     public ResponseEntity<Map<String, String>> deleteAccount(@PathVariable("accountId") Long accountId) {
+        accountsService.deleteAccount(accountId);  // 상태 변경만 수행
         Map<String, String> response = new HashMap<>();
         response.put("message", "성공적으로 탈퇴되었습니다.");
         return ResponseEntity.ok(response);
