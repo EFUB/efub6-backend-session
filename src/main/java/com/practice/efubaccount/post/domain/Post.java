@@ -1,7 +1,7 @@
 package com.practice.efubaccount.post.domain;
 
 import com.practice.efubaccount.account.domain.Account;
-//import com.practice.efubaccount.comment.domain.Comment;
+import com.practice.efubaccount.comment.domain.Comment;
 
 import com.practice.efubaccount.global.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -35,6 +35,8 @@ public class Post extends BaseEntity {
     private Long viewCount;
 
     // 연관관계의 Owner 설정
+    @OneToMany(mappedBy="post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 
 
     @Builder
