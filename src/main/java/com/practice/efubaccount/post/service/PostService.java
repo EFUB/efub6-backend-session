@@ -11,15 +11,17 @@ import com.practice.efubaccount.post.dto.response.PostListResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;
 import com.practice.efubaccount.post.dto.summary.PostSummary;
 import com.practice.efubaccount.post.repository.PostRepository;
+import org.springframework.transaction.annotation.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
     private final PostRepository postRepository;
     private final AccountsService accountService;
 
@@ -30,6 +32,16 @@ public class PostService {
         Post newPost = request.toEntity(writerAccount);
         postRepository.save(newPost);
         return newPost.getId();
+
+    }
+
+    @Transactional(readOnly=true)
+    public PostListResponse getAllPosts() {
+        List<PostSummary> postSummaries = postRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(PostSummary::from)
+                .toList();
+        return new PostListResponse(postSummaries, postRepository.count());
     }
 
     @Transactional
@@ -41,16 +53,9 @@ public class PostService {
         return PostResponse.from(post);
     }
 
-    @Transactional(readOnly = true)
-    public PostListResponse getAllPosts() {
-        List<PostSummary> postSummaries = postRepository.findAllByOrderByCreatedAtDesc()
-                .stream()
-                .map(PostSummary::from).toList();
-        return new PostListResponse(postSummaries, postRepository.count());
-    }
 
     @Transactional
-    public void updatePostContent(Long postId, PostUpdateRequest request, Long accountId) {
+    public void updatePostContent(Long postId, Long accountId, @Valid PostUpdateRequest request) {
         Post post = findByPostId(postId);
         Account account = accountService.findByAccountId(accountId);
 
@@ -69,7 +74,7 @@ public class PostService {
 
     public Post findByPostId(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(()-> new CustomException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
     }
 
     private void authorizePostWriter(Post post, Account account) {
@@ -77,4 +82,5 @@ public class PostService {
             throw new CustomException(ErrorCode.POST_ACCOUNT_MISMATCH);
         }
     }
+
 }
