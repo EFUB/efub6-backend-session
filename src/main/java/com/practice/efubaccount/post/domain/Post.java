@@ -19,7 +19,7 @@ import java.util.List;
 public class Post extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO) // 아이디값 직접 직정 안 해줘도 됨
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
