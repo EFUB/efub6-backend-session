@@ -11,7 +11,7 @@ public class ExampleDto {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name=name;
     }
 
     public Long getId() {
@@ -19,7 +19,7 @@ public class ExampleDto {
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id=id;
     }
 
     public String getPassword() {
@@ -27,6 +27,6 @@ public class ExampleDto {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password=password;
     }
 }
