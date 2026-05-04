@@ -48,9 +48,9 @@ public class Account {
 
     @Builder
     public Account(String email, String password, String nickname) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
+        this.email=email;
+        this.password=password;
+        this.nickname=nickname;
     }
 
     public void updateBio(String bio) {
@@ -58,6 +58,6 @@ public class Account {
     }
 
     public void changeStatus(AccountStatus status) {
-        this.status = status;
+        this.status=status;
     }
 }
