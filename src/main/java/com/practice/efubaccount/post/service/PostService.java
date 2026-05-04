@@ -67,6 +67,7 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    @Transactional(readOnly = true)
     public Post findByPostId(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(()-> new CustomException(ErrorCode.POST_NOT_FOUND));
