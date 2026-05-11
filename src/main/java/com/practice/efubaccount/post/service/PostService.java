@@ -11,10 +11,9 @@ import com.practice.efubaccount.post.dto.response.PostListResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;
 import com.practice.efubaccount.post.dto.summary.PostSummary;
 import com.practice.efubaccount.post.repository.PostRepository;
-import jakarta.validation.Valid;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,14 +32,6 @@ public class PostService {
         return newPost.getId();
     }
 
-    @Transactional(readOnly = true)
-    public PostListResponse getAllPosts() {
-        List<PostSummary> postSummaries = postRepository.findAllByOrderByCreatedAtDesc()
-                .stream()
-                .map(PostSummary::from).toList();
-        return new PostListResponse(postSummaries, postRepository.count());
-    }
-
     @Transactional
     public PostResponse getPost(Long postId) {
         // 조회수 증가
@@ -50,8 +41,16 @@ public class PostService {
         return PostResponse.from(post);
     }
 
+    @Transactional(readOnly = true)
+    public PostListResponse getAllPosts() {
+        List<PostSummary> postSummaries = postRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(PostSummary::from).toList();
+        return new PostListResponse(postSummaries, postRepository.count());
+    }
+
     @Transactional
-    public void updatePostContent(Long postId, Long accountId, @Valid PostUpdateRequest request) {
+    public void updatePostContent(Long postId, PostUpdateRequest request, Long accountId) {
         Post post = findByPostId(postId);
         Account account = accountService.findByAccountId(accountId);
 
@@ -68,9 +67,10 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    private Post findByPostId(Long postId) {
+    @Transactional(readOnly = true)
+    public Post findByPostId(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+                .orElseThrow(()-> new CustomException(ErrorCode.POST_NOT_FOUND));
     }
 
     private void authorizePostWriter(Post post, Account account) {
@@ -78,6 +78,4 @@ public class PostService {
             throw new CustomException(ErrorCode.POST_ACCOUNT_MISMATCH);
         }
     }
-
-
 }
