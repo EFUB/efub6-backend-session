@@ -1,16 +1,12 @@
 package com.practice.efubaccount.post.controller;
 
 import com.practice.efubaccount.post.dto.request.PostCreateRequest;
-//import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
-//import com.practice.efubaccount.post.dto.response.PostListResponse;
-//import com.practice.efubaccount.post.dto.response.PostResponse;
 import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
 import com.practice.efubaccount.post.dto.response.PostListResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;
 import com.practice.efubaccount.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,22 +28,20 @@ public class PostController {
     // 게시물 전체 조회
     @GetMapping
     public ResponseEntity<PostListResponse> getAllPosts(){
-        PostListResponse response = postService.getAllPosts();
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(postService.getAllPosts());
     }
 
     // 게시물 1개 조회
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable("id") Long postId){
-        PostResponse response = postService.getPost(postId);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<PostResponse> getPost(@PathVariable("id") Long id){
+        return ResponseEntity.ok(postService.getPost(id));
     }
 
     // 게시글 수정
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updatePostContent(@PathVariable("id") Long postId,
                                                   @RequestHeader("Auth-Id") Long accountId,
-                                                  @RequestBody PostUpdateRequest request){
+                                                  @Valid @RequestBody PostUpdateRequest request) {
         postService.updatePostContent(postId, request, accountId);
         return ResponseEntity.noContent().build();
     }
@@ -56,7 +50,7 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable("id") Long postId,
                                            @RequestHeader("Auth-Id") Long accountId){
-        postService.deletePost(postId,accountId);
+        postService.deletePost(postId, accountId);
         return ResponseEntity.noContent().build();
     }
 }
