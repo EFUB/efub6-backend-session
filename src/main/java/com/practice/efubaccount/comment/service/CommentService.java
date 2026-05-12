@@ -5,6 +5,7 @@ import com.practice.efubaccount.comment.domain.CommentLike;
 import com.practice.efubaccount.comment.dto.request.CommentRequest;
 import com.practice.efubaccount.comment.dto.request.CommentUpdateRequest;
 import com.practice.efubaccount.comment.dto.response.CommentResponse;
+//import com.practice.efubaccount.comment.repository.CommentLikeRepository;
 import com.practice.efubaccount.comment.repository.CommentLikeRepository;
 import com.practice.efubaccount.global.exception.CustomException;
 import com.practice.efubaccount.global.exception.ErrorCode;
@@ -31,6 +32,7 @@ public class CommentService {
     private final PostService postService;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+    //private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
     public Long createComment(Long postId, CommentRequest request) {
@@ -54,4 +56,58 @@ public class CommentService {
         List<Comment> commentList = commentRepository.findAllByWriterAccountIdOrderByCreatedAtDesc(accountId);
         return AccountCommentResponse.of(account, commentList);
     }
+
+    @Transactional
+    public CommentResponse updateComment(Long commentId, CommentUpdateRequest request, Long accountId) {
+        Comment comment = findByCommentId(commentId);
+        Account account = accountService.findByAccountId(accountId);
+        authorizeCommentWriter(comment, account);
+        comment.updateContent(request.getContent());
+        return CommentResponse.of(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, Long accountId) {
+        Comment comment = findByCommentId(commentId);
+        Account account = accountService.findByAccountId(accountId);
+        authorizeCommentWriter(comment, account);
+        commentRepository.delete(comment);
+    }
+
+    @Transactional
+    public void likeComment(Long commentId, Long accountId) {
+        Comment comment = findByCommentId(commentId);
+        Account account = accountService.findByAccountId(accountId);
+        if(commentLikeRepository.existsByCommentAndAccount(comment, account)){
+            throw new CustomException(ErrorCode.LIKE_ALREADY_EXISTS);
+        }
+        CommentLike like = CommentLike.builder()
+                .account(account)
+                .comment(comment)
+                .build();
+        commentLikeRepository.save(like);
+    }
+
+    @Transactional
+    public void unlikeComment(Long commentId, Long accountId){
+        Comment comment = findByCommentId(commentId);
+        Account account = accountService.findByAccountId(accountId);
+        CommentLike like = commentLikeRepository.findByCommentAndAccount(comment, account)
+                .orElseThrow(()-> new CustomException(ErrorCode.LIKE_NOT_FOUND));
+        commentLikeRepository.delete(like);
+    }
+
+
+    private Comment findByCommentId (Long commentId){
+        return commentRepository.findById(commentId)
+                .orElseThrow(()-> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
+    private void authorizeCommentWriter(Comment comment, Account account){
+        if(!comment.getWriter().equals(account)){
+            throw new CustomException(ErrorCode.COMMENT_ACCOUNT_MISMATCH);
+        }
+    }
+
+
 }
