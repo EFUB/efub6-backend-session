@@ -42,7 +42,7 @@ public class PostController {
     public ResponseEntity<Void> updatePostContent(@PathVariable("id") Long postId,
                                                   @RequestHeader("Auth-Id") Long accountId,
                                                   @Valid @RequestBody PostUpdateRequest request) {
-        postService.updatePostContent(postId, accountId, request);
+        postService.updatePostContent(postId, request, accountId);
         return ResponseEntity.noContent().build();
     }
 
