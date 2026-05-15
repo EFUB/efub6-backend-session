@@ -14,12 +14,13 @@ public class CommentRequest {
     private Long accountId;
     private String content;
 
-    public Comment toEntity(Account account, Post post) {
+    public Comment toEntity(Account account, Post post){
         return Comment.builder()
                 .content(content)
                 .writer(account)
                 .post(post)
                 .build();
     }
+
 
 }

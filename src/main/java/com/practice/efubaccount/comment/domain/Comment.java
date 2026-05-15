@@ -1,6 +1,7 @@
 package com.practice.efubaccount.comment.domain;
 
 import com.practice.efubaccount.account.domain.Account;
+//import com.practice.efubaccount.global.domain.BaseEntity;
 import com.practice.efubaccount.global.domain.BaseEntity;
 import com.practice.efubaccount.post.domain.Post;
 import jakarta.persistence.*;
@@ -28,7 +29,7 @@ public class Comment extends BaseEntity {
     private Account writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="post_id", updatable = false)
+    @JoinColumn(name="post_id",updatable = false)
     private Post post;
 
     @Builder

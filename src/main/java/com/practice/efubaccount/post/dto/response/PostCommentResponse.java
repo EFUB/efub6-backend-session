@@ -18,12 +18,11 @@ public class PostCommentResponse {
     private final List<CommentResponse> postCommentList;
     private final Long count;
 
-    public static PostCommentResponse of(Long postId, List<Comment> commentList) {
+    public static PostCommentResponse of(Long postId,List<Comment> commentList){
         return PostCommentResponse.builder()
                 .postId(postId)
                 .postCommentList(commentList.stream().map(CommentResponse::of).collect(Collectors.toList()))
                 .count((long) commentList.size())
                 .build();
-
     }
 }
