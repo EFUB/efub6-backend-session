@@ -1,7 +1,6 @@
 package com.practice.efubaccount.account.controller;
 
 import com.practice.efubaccount.account.dto.response.AccountCommentResponse;
-import com.practice.efubaccount.account.dto.response.AccountResponseDto;
 import com.practice.efubaccount.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountCommentController {
     private final CommentService commentService;
 
-    //작성자별 댓글 목록 조회
     @GetMapping
-    public ResponseEntity<AccountCommentResponse> getAccountComments(@PathVariable("accountId") Long accountId) {
+    public ResponseEntity<AccountCommentResponse>getAccountComments(@PathVariable("accountId") Long accountId) {
         return ResponseEntity.ok(commentService.getAccountCommentList(accountId));
     }
 }
