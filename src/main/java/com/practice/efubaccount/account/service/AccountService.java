@@ -30,12 +30,12 @@ public class AccountService {
     // 회원 생성
     @Transactional
     public CreateAccountResponseDto createAccount(CreateAccountRequestDto requestDto) {
+        // 이메일 중복 검사
         if (accountRepository.existsByEmail(requestDto.getEmail())) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다." + requestDto.getEmail());
         }
         Account account = requestDto.toEntity();
         Account savedAccount = accountRepository.save(account);
-
         return CreateAccountResponseDto.from(savedAccount);
     }
 
