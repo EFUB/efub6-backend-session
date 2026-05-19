@@ -18,18 +18,82 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FollowService {
 
     private final AccountService accountService;
     private final FollowRepository followRepository;
 
-    // TODO 1) 팔로우 추가
+    // 1) 팔로우 추가
+    @Transactional
+    public FollowStatusResponse follow(Long requesterId, Long targetId){
+        if(requesterId.equals(targetId)){
+            throw new CustomException(ErrorCode.CANNOT_FOLLOW_SELF);
+        }
 
-    // TODO 2) 팔로우 취소
+        Account requester = accountService.findByAccountId(requesterId);
+        Account target = accountService.findByAccountId(targetId);
 
-    // TODO 3) 팔로우 여부 조회
+        if(followRepository.existsByFollowerAndFollowee(requester, target)){
+            throw new CustomException(ErrorCode.FOLLOW_ALREADY_EXISTS);
+        }
 
-    // TODO 4) 팔로우 목록 조회
+        Follow follow = Follow.builder()
+                .follower(requester)
+                .followee(target)
+                .build();
+        followRepository.save(follow);
 
+        return FollowStatusResponse.of(target, FollowStatus.FOLLOW);
+    }
+
+    //  2) 팔로우 취소
+    @Transactional
+    public FollowStatusResponse unfollow(Long requesterId, Long targetId){
+        Account requester = accountService.findByAccountId(requesterId);
+        Account target = accountService.findByAccountId(targetId);
+
+        Follow follow = getFollow(requester, target); //find는 값이 없을수도 있는 것 / get은 값이 있다는 것이 암묵적으로 내포되어 있음. 예외처리를 해서라도 값이 없는 경우는 제외해야함
+
+        followRepository.delete(follow);
+
+        return FollowStatusResponse.of(target, FollowStatus.UNFOLLOW);
+    }
+
+    //3) 팔로우 여부 조회
+    public FollowStatusResponse checkFollowStatusByEmail(Long requesterId, String targetEmail){
+        Account requester = accountService.findByAccountId(requesterId);
+        Account target = accountService.findByEmail(targetEmail);
+
+        boolean isFollowing = followRepository.existsByFollowerAndFollowee(requester, target);
+        FollowStatus status = isFollowing? FollowStatus.FOLLOW: FollowStatus.UNFOLLOW;
+
+        return FollowStatusResponse.of(target, status);
+    }
+
+    // 4) 팔로우 목록 조회
+    public FollowListResponse getFollowList(Long requesterId){
+        Account requester = accountService.findByAccountId(requesterId);
+
+        //요청자가 followee로 있는 follow 객체들
+        List<Follow> followerList = followRepository.findAllByFollowee(requester);
+
+        //요청자가 follower로 있는 follow 객체들
+        List<Follow>  followingList = followRepository.findAllByFollower(requester);
+
+
+        //가져온 follow 객체에서 follower, followee만 추출해 리스트로 생성
+        List<Account> followers = followerList.stream().map(Follow::getFollower).toList();
+
+        List<Account> followings = followingList.stream().map(Follow::getFollowee).toList();
+
+        return FollowListResponse.of(followers, followings);
+    }
+
+    //private Helper
+    private Follow getFollow(Account follower, Account followee){
+        return followRepository.findByFollowerAndFollowee(follower, followee)
+                .orElseThrow(()-> new CustomException(ErrorCode.FOLLOW_NOT_FOUND));
+    }
 
 }

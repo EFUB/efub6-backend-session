@@ -11,5 +11,14 @@ import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
+    boolean existsByFollowerAndFollowee(Account requester, Account target);
 
+    Optional<Follow> findByFollowerAndFollowee(Account follower, Account followee);
+
+    //fetch조인 : 관련된거 한번에 들고오는거 => N+1 문제 해결
+    @Query("SELECT f FROM Follow f JOIN FETCH f.follower WHERE f.followee = :requester")
+    List<Follow> findAllByFollowee(@Param("requester") Account followee);
+
+    @Query("SELECT f FROM Follow f JOIN FETCH f.followee WHERE f.follower = :requester")
+    List<Follow> findAllByFollower(@Param("requester") Account follower);
 }
