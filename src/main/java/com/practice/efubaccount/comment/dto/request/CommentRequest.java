@@ -12,14 +12,13 @@ import lombok.*;
 public class CommentRequest {
     // 댓글 작성자 ID, 댓글 내용 전달받기 위한 필드 정의
     private Long accountId;
-    private String content;
+    private String comment;
 
     public Comment toEntity(Account account, Post post) {
         return Comment.builder()
-                .content(content)
-                .writer(account)
+                .content(comment)
                 .post(post)
+                .writer(account)
                 .build();
     }
-
 }
