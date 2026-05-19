@@ -5,6 +5,7 @@ import com.practice.efubaccount.comment.domain.CommentLike;
 import com.practice.efubaccount.comment.dto.request.CommentRequest;
 import com.practice.efubaccount.comment.dto.request.CommentUpdateRequest;
 import com.practice.efubaccount.comment.dto.response.CommentResponse;
+//import com.practice.efubaccount.comment.repository.CommentLikeRepository;
 import com.practice.efubaccount.comment.repository.CommentLikeRepository;
 import com.practice.efubaccount.global.exception.CustomException;
 import com.practice.efubaccount.global.exception.ErrorCode;
@@ -31,6 +32,7 @@ public class CommentService {
     private final PostService postService;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+    //private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
     public Long createComment(Long postId, CommentRequest request) {
@@ -55,60 +57,57 @@ public class CommentService {
         return AccountCommentResponse.of(account, commentList);
     }
 
-    // 댓글 수정
     @Transactional
-    public CommentResponse updateComment(Long commentId, CommentUpdateRequest request, Long accountId, String password) {
+    public CommentResponse updateComment(Long commentId, CommentUpdateRequest request, Long accountId) {
         Comment comment = findByCommentId(commentId);
         Account account = accountService.findByAccountId(accountId);
-        authorizeCommentWriter(comment, account, password);
+        authorizeCommentWriter(comment, account);
         comment.updateContent(request.getContent());
         return CommentResponse.of(comment);
     }
 
-    // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, Long accountId, String password) {
+    public void deleteComment(Long commentId, Long accountId) {
         Comment comment = findByCommentId(commentId);
         Account account = accountService.findByAccountId(accountId);
-        authorizeCommentWriter(comment, account, password);
+        authorizeCommentWriter(comment, account);
         commentRepository.delete(comment);
     }
 
-    // 댓글 좋아요 등록
     @Transactional
     public void likeComment(Long commentId, Long accountId) {
         Comment comment = findByCommentId(commentId);
         Account account = accountService.findByAccountId(accountId);
-        // 좋아요가 이미 존재하는지 여부 확인
-        if (commentLikeRepository.existsByCommentAndAccount(comment, account)) {
+        if(commentLikeRepository.existsByCommentAndAccount(comment, account)){
             throw new CustomException(ErrorCode.LIKE_ALREADY_EXISTS);
         }
         CommentLike like = CommentLike.builder()
-                .comment(comment)
                 .account(account)
+                .comment(comment)
                 .build();
         commentLikeRepository.save(like);
     }
 
-    // 댓글 좋아요 취소
     @Transactional
-    public void unlikeComment(Long commentId, Long accountId) {
+    public void unlikeComment(Long commentId, Long accountId){
         Comment comment = findByCommentId(commentId);
         Account account = accountService.findByAccountId(accountId);
         CommentLike like = commentLikeRepository.findByCommentAndAccount(comment, account)
-                .orElseThrow(() -> new CustomException(ErrorCode.LIKE_NOT_FOUND));
+                .orElseThrow(()-> new CustomException(ErrorCode.LIKE_NOT_FOUND));
         commentLikeRepository.delete(like);
     }
 
-    private Comment findByCommentId(Long commentId) {
+
+    private Comment findByCommentId (Long commentId){
         return commentRepository.findById(commentId)
-                .orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+                .orElseThrow(()-> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
     }
 
-    private void authorizeCommentWriter(Comment comment, Account account, String password) {
-        if (!comment.getWriter().equals(account)
-                || !account.getPassword().equals(password)) {
+    private void authorizeCommentWriter(Comment comment, Account account){
+        if(!comment.getWriter().equals(account)){
             throw new CustomException(ErrorCode.COMMENT_ACCOUNT_MISMATCH);
         }
     }
+
+
 }

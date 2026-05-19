@@ -14,20 +14,21 @@ public class CommentLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_like_id")
+    @Column(name="comment_like_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id", updatable = false, nullable = false)
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", updatable = false, nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     @Builder
-    public CommentLike(Comment comment, Account account) {
-        this.comment = comment;
+    public CommentLike(Comment comment, Account account){
+        this.comment=comment;
         this.account = account;
     }
+
 }

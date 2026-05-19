@@ -7,10 +7,8 @@ import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    // 이메일 중복검사를 위한 쿼리
     boolean existsByEmail(String email);
 
-    // 회원 ID로 조회
     Optional<Account> findByAccountId(Long accountId);
 
     Optional<Account> findByEmail(String email);

@@ -1,6 +1,7 @@
 package com.practice.efubaccount.comment.domain;
 
 import com.practice.efubaccount.account.domain.Account;
+//import com.practice.efubaccount.global.domain.BaseEntity;
 import com.practice.efubaccount.global.domain.BaseEntity;
 import com.practice.efubaccount.post.domain.Post;
 import jakarta.persistence.*;
@@ -24,11 +25,11 @@ public class Comment extends BaseEntity {
 
     // 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="account_id",updatable = false)
+    @JoinColumn(name="account_id", updatable = false)
     private Account writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="post_id", updatable = false)
+    @JoinColumn(name = "post_id", updatable = false)
     private Post post;
 
     @Builder
@@ -38,7 +39,7 @@ public class Comment extends BaseEntity {
         this.post = post;
     }
 
-    public void updateContent(String newContent) {
+    public void updateContent(String newContent){
         this.content = newContent;
     }
 }
