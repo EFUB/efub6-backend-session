@@ -37,18 +37,17 @@ public class PostCommentController {
     @PatchMapping("/comments/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(@PathVariable("commentId") Long commentId,
                                                          @RequestBody @Valid CommentUpdateRequest request,
-                                                         @RequestHeader("Auth-Id") Long accountId,
-                                                         @RequestHeader("Auth-Password") String password) {
-        CommentResponse response = commentService.updateComment(commentId, request, accountId, password);
+                                                         @RequestHeader("Auth-Id") Long accountId) {
+
+        CommentResponse response = commentService.updateComment(commentId, request, accountId);
         return ResponseEntity.ok(response);
     }
 
     // 댓글 삭제
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(@PathVariable("commentId") Long commentId,
-                                              @RequestHeader("Auth-Id") Long accountId,
-                                              @RequestHeader("Auth-Password") String password) {
-        commentService.deleteComment(commentId, accountId, password);
+                                              @RequestHeader("Auth-Id") Long accountId) {
+        commentService.deleteComment(commentId, accountId);
         return ResponseEntity.noContent().build();
     }
 
@@ -57,7 +56,7 @@ public class PostCommentController {
     public ResponseEntity<String> likeComment(@PathVariable("commentId") Long commentId,
                                               @RequestHeader("Auth-Id") Long accountId) {
         commentService.likeComment(commentId, accountId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("좋아요를 눌렀습니다.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("좋아요를 눌렸습니다.");
     }
 
     // 댓글 좋아요 취소
@@ -65,6 +64,6 @@ public class PostCommentController {
     public ResponseEntity<String> unlikeComment(@PathVariable("commentId") Long commentId,
                                                 @RequestHeader("Auth-Id") Long accountId) {
         commentService.unlikeComment(commentId, accountId);
-        return ResponseEntity.ok("좋아요가 취소되었습니다.");
+        return ResponseEntity.ok("좋아요 취소되었습니다.");
     }
 }
