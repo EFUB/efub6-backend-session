@@ -8,11 +8,10 @@ public class OAuth2UserInfo {
     public OAuth2UserInfo(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
-    public String getNickname() {
-        return (String) attributes.get("name");
-    }
-    public String getEmail() {
-        return (String) attributes.get("email");
-    }
+
+    //TODO: 이름 반환
+
+
+    //TODO: 이메일 반환
 }
 
