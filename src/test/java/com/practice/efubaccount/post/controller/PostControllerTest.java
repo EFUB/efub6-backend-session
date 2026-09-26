@@ -22,25 +22,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc(addFilters = false)
-@ActiveProfiles("test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+// TODO 7) 애노테이션 추가
 class PostControllerTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired AccountRepository accountRepository;
-    @Autowired PostRepository postRepository;
+    // TODO 8) 의존성 주입
 
-    @BeforeEach
-    void seed() {
-        Account account = Account.builder()
-                .email("efub@example.com")
-                .password("password")
-                .nickname("efub")
-                .build();
-        accountRepository.save(account);
-    }
+    // TODO 9) 테스트용 DB 삽입
 
     @Test
     @DisplayName("POST /posts → 201, Location 헤더 & H2에 실제 저장")
@@ -50,38 +37,20 @@ class PostControllerTest {
                 {"title":"제목","content":"내용은다섯글자이상","accountId":1}
                 """;
 
-        // when
-        MvcResult res = mockMvc.perform(post("/posts")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("Location", matchesPattern("^/posts/\\d+$")))
-                .andReturn();
+        // TODO 10) when
 
-        // then
-        String location = res.getResponse().getHeader("Location");
-        long id = Long.parseLong(java.net.URI.create(location).getPath().replace("/posts/", ""));
-        assertTrue(postRepository.findById(id).isPresent());
+
+        // TODO 11) then
+
     }
 
     @Test
     @DisplayName("GET /posts/{id} → 200 & 응답 필드 검증")
     void getPost_200() throws Exception {
-        // given
-        Account account = accountRepository.findAll().get(0);
-        Post post = Post.builder()
-                .title("제목")
-                .writer(account)
-                .content("내용은다섯글자이상")
-                .build();
-        post = postRepository.save(post);
+        // TODO 12) given
 
-        // when then
-        mockMvc.perform(get("/posts/{id}", post.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("제목"));
+
+        // TODO 13) when & then
+
     }
-
 }
-
-
