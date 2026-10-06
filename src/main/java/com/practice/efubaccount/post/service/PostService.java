@@ -57,14 +57,14 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public PostPageResponse getPosts(int page, int size) {
-        // PageRequest 생성 → Repository 조회 → 응답 DTO 변환을 구현한다.
-        // PageRequest pageRequest = PageRequest.of(
-        //         page,
-        //         size,
-        //         Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))
-        // );
-        // Page<PostSummary> posts = postRepository.findPostSummaries(pageRequest);
-        // return PostPageResponse.from(posts);
+         // PageRequest 생성 → Repository 조회 → 응답 DTO 변환을 구현한다.
+         PageRequest pageRequest = PageRequest.of(
+                 page,
+                 size,
+                 Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))
+         );
+         Page<PostSummary> posts = postRepository.findPostSummaries(pageRequest);
+         return PostPageResponse.from(posts);
     }
 
     @Transactional
