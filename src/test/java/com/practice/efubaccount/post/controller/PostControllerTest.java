@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -82,6 +83,35 @@ class PostControllerTest {
                 .andExpect(jsonPath("$.title").value("제목"));
     }
 
-}
+    @Test
+    @DisplayName("GET /posts → 페이지네이션된 게시물 조회")
+    void getPosts_withPagination() throws Exception {
+        // given
+        Account account = accountRepository.findAll().get(0);
+        postRepository.save(Post.builder()
+                .title("제목")
+                .writer(account)
+                .content("내용은다섯글자이상")
+                .build());
 
+        // when & then
+        mockMvc.perform(get("/posts")
+                        .param("page", "0")
+                        .param("size", "20"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.posts", hasSize(1)))
+                .andExpect(jsonPath("$.currentPage").value(0))
+                .andExpect(jsonPath("$.pageSize").value(20))
+                .andExpect(jsonPath("$.totalPosts").value(1))
+                .andExpect(jsonPath("$.hasNext").value(false));
+    }
+
+    @Test
+    @DisplayName("GET /posts?size=101 → 최대 페이지 크기 초과로 400")
+    void getPosts_rejectsTooLargePageSize() throws Exception {
+        mockMvc.perform(get("/posts").param("size", "101"))
+                .andExpect(status().isBadRequest());
+    }
+
+}
 
