@@ -36,8 +36,10 @@ public class AccountService {
         }
         Account account = requestDto.toEntity();
         Account savedAccount = accountRepository.save(account);
+
         return CreateAccountResponseDto.from(savedAccount);
     }
+
 
     // 프로필(자기소개) 수정
     @Transactional
@@ -45,6 +47,8 @@ public class AccountService {
         Account account = accountRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
         account.updateBio(requestDto.getBio());
+        account.updateNickname(requestDto.getNickname());
+
         return AccountResponseDto.from(account);
     }
 
@@ -61,6 +65,7 @@ public class AccountService {
     public void physicalDeleteAccount(Long accountId) {
         Account account = accountRepository.findByAccountId(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
+
         accountRepository.delete(account);
     }
 
