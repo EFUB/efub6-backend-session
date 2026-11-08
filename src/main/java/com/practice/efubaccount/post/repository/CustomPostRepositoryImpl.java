@@ -19,29 +19,12 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     @Override
     public List<Post> search(String keyword, String writerNickname) {
 
-        QPost post = QPost.post;
-        QAccount account = QAccount.account;
+        // TODO 4-1) Q클래스 객체 선언하기
 
-        BooleanBuilder builder = new BooleanBuilder();
+        // TODO 4-2) BooleanBuilder를 사용해 동적 검색 조건 작성하기
 
-        // 작성자 닉네임 조건
-        if (writerNickname != null && !writerNickname.isBlank()) {
-            builder.and(post.writer.nickname.eq(writerNickname));
-        }
+        // TODO 4-3) QueryDSL로 게시글 조회 쿼리 작성하기
 
-        // 게시글 제목 또는 내용 검색
-        if (keyword != null && !keyword.isBlank()) {
-            builder.and(
-                    post.title.containsIgnoreCase(keyword)
-                            .or(post.content.containsIgnoreCase(keyword))
-            );
-        }
-
-        return queryFactory
-                .selectFrom(post)
-                .join(post.writer, account).fetchJoin()
-                .where(builder)
-                .orderBy(post.createdAt.desc())
-                .fetch();
+        return List.of();
     }
 }
