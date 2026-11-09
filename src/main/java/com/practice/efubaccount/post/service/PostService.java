@@ -10,6 +10,7 @@ import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
 import com.practice.efubaccount.post.dto.response.PostListResponse;
 import com.practice.efubaccount.post.dto.response.PostPageResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;
+//import com.practice.efubaccount.post.dto.response.PostSearchResponseDto;
 import com.practice.efubaccount.post.dto.summary.PostSummary;
 import com.practice.efubaccount.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -63,6 +65,8 @@ public class PostService {
         Page<PostSummary> posts = postRepository.findPostSummaries(pageRequest);
         return PostPageResponse.from(posts);
     }
+
+    // TODO 6) import 문 주석 해제 & 게시글 동적 검색 서비스 메서드 구현하기
 
     @Transactional
     public void updatePostContent(Long postId, PostUpdateRequest request, Long accountId) {
