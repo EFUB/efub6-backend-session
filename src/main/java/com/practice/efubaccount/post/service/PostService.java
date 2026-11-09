@@ -10,6 +10,7 @@ import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
 import com.practice.efubaccount.post.dto.response.PostListResponse;
 import com.practice.efubaccount.post.dto.response.PostPageResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;
+import com.practice.efubaccount.post.dto.response.PostSearchResponseDto;
 import com.practice.efubaccount.post.dto.summary.PostSummary;
 import com.practice.efubaccount.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -62,6 +64,18 @@ public class PostService {
         );
         Page<PostSummary> posts = postRepository.findPostSummaries(pageRequest);
         return PostPageResponse.from(posts);
+    }
+
+    // QueryDSL을 이용한 게시글 동적 검색
+    @Transactional(readOnly = true)
+    public List<PostSearchResponseDto> searchPost(
+            String keyword,
+            String writerNickname
+    ) {
+        return postRepository.search(keyword, writerNickname)
+                .stream()
+                .map(PostSearchResponseDto::new)
+                .toList();
     }
 
     @Transactional

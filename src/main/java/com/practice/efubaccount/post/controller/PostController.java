@@ -5,6 +5,7 @@ import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
 import com.practice.efubaccount.post.dto.response.PostListResponse;
 import com.practice.efubaccount.post.dto.response.PostPageResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;
+import com.practice.efubaccount.post.dto.response.PostSearchResponseDto;
 import com.practice.efubaccount.post.service.PostService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
@@ -35,6 +37,17 @@ public class PostController {
             @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size
     ) {
         return ResponseEntity.ok(postService.getPosts(page, size));
+    }
+
+    // QueryDSL을 이용한 게시글 동적 검색
+    @GetMapping("/search")
+    public ResponseEntity<List<PostSearchResponseDto>> searchPost(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "writer", required = false) String writerNickname
+    ) {
+        return ResponseEntity.ok(
+                postService.searchPost(keyword, writerNickname)
+        );
     }
 
     // 성능 비교 실습용: 모든 게시물을 한 번에 조회
