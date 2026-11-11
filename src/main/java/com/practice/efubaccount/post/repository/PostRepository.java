@@ -1,5 +1,6 @@
 package com.practice.efubaccount.post.repository;
 
+import com.practice.efubaccount.account.domain.Account;
 import com.practice.efubaccount.post.domain.Post;
 import com.practice.efubaccount.post.dto.summary.PostSummary;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 // TODO 5) CustomPostRepository 상속하기
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, CustomPostRepository {
 
     @Query(
             value = """
@@ -35,4 +36,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :postId")
     int increaseViewCount(@Param("postId") Long postId);
+
+    String writer(Account writer);
 }
