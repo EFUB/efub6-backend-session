@@ -1,0 +1,25 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/efub?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+    show-sql: false
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY:dGVzdC1vbmx5LXNlY3JldC1rZXktZm9yLWxvYWQtdGVzdC1jaS1vbmx5}
+
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: warn

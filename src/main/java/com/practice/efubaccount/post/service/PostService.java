@@ -8,12 +8,18 @@ import com.practice.efubaccount.post.domain.Post;
 import com.practice.efubaccount.post.dto.request.PostCreateRequest;
 import com.practice.efubaccount.post.dto.request.PostUpdateRequest;
 import com.practice.efubaccount.post.dto.response.PostListResponse;
+import com.practice.efubaccount.post.dto.response.PostPageResponse;
 import com.practice.efubaccount.post.dto.response.PostResponse;
+import com.practice.efubaccount.post.dto.response.PostSearchResponseDto;
 import com.practice.efubaccount.post.dto.summary.PostSummary;
 import com.practice.efubaccount.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -47,6 +53,26 @@ public class PostService {
                 .stream()
                 .map(PostSummary::from).toList();
         return new PostListResponse(postSummaries, postRepository.count());
+    }
+
+    @Transactional(readOnly = true)
+    public PostPageResponse getPosts(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                size,
+                Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("id"))
+        );
+        Page<PostSummary> posts = postRepository.findPostSummaries(pageRequest);
+        return PostPageResponse.from(posts);
+    }
+
+    // TODO 6) import 문 주석 해제 & 게시글 동적 검색 서비스 메서드 구현하기
+    @Transactional(readOnly = true)
+    public List<PostSearchResponseDto> searchPost(String keyword, String writerNickname) {
+        return postRepository.search(keyword, writerNickname)
+                .stream()
+                .map(PostSearchResponseDto::new)
+                .toList();
     }
 
     @Transactional
