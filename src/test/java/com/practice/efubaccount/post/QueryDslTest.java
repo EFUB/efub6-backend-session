@@ -31,25 +31,59 @@ class QueryDslTest {
 
     @BeforeEach
     void setUp() {
-        // TODO 9-1) 테스트용 계정 및 게시글 데이터 생성하기
+        account1 = accountRepository.save(Account.builder()
+                .email("week15-ewha@example.com")
+                .password("pass1")
+                .nickname("week15_ewha")
+                .build());
+
+        account2 = accountRepository.save(Account.builder()
+                .email("week15-fubi@example.com")
+                .password("pass2")
+                .nickname("week15_fubi")
+                .build());
+
+        postRepository.save(Post.builder()
+                .title("QueryDSL Practice")
+                .content("Dynamic Query")
+                .writer(account1)
+                .build());
+
+        postRepository.save(Post.builder()
+                .title("JPA Study")
+                .content("Learning querydsl")
+                .writer(account1)
+                .build());
+
+        postRepository.save(Post.builder()
+                .title("QUERYDSL Tutorial")
+                .content("EFUB")
+                .writer(account2)
+                .build());
     }
 
     @Test
     void searchByKeyword() {
-        // TODO 9-2) 키워드로 게시글 검색 테스트하기
-        throw new UnsupportedOperationException("TODO 9-2");
+        List<Post> result = postRepository.search("querydsl", null);
+
+        assertThat(result).hasSize(3);
     }
 
     @Test
     void searchByWriterNickname() {
-        // TODO 9-3) 작성자 닉네임으로 게시글 검색 테스트하기
-        throw new UnsupportedOperationException("TODO 9-3");
+        List<Post> result = postRepository.search(null, "week15_ewha");
+
+        assertThat(result).hasSize(2);
     }
 
     @Test
     void searchByKeywordAndWriter() {
-        // TODO 9-4) 키워드와 작성자 조건을 함께 적용해 검색 테스트하기
-        throw new UnsupportedOperationException("TODO 9-4");
+        List<Post> result = postRepository.search(
+                "querydsl", "week15_fubi"
+        );
 
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTitle())
+                .isEqualTo("QUERYDSL Tutorial");
     }
 }
