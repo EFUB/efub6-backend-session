@@ -15,6 +15,12 @@ spring:
       hibernate:
         format_sql: false
     show-sql: false
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+
 
 jwt:
   secretKey: ${JWT_SECRET_KEY:dGVzdC1vbmx5LXNlY3JldC1rZXktZm9yLWxvYWQtdGVzdC1jaS1vbmx5}
